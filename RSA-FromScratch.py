@@ -16,6 +16,7 @@
 # (Might be helpful to know if I write the encryptiong process in lower dimention code for optimization)
 
 INPUT = ":)"
+
 # UTF ENCODING INTO UNICODE
 def encode_to_utf8_unicode(input_text):
     encoded_unicode_array = []
@@ -120,11 +121,14 @@ def calculate_n(p ,q):
     n = p * q 
     return n
 
-
+# calculate_eulers_totient() takes the randomly generated prime numbers generate_two_distinct_primes() 
+# makes and uses it to calculate Euler's totient that will be used to generate the public and private 
+# exponents
 def calculate_eulers_totient(p, q):
     φ_n = (p-1) * (q-1)
     return φ_n
 
+# create_public_exponent() makes the public exponent e that makes up half the public key. 
 def create_public_exponent(φ_n):
     if math.gcd(65537, φ_n) == 1:
         return 65537
@@ -133,7 +137,9 @@ def create_public_exponent(φ_n):
             e = secrets.randbits((bits * 2) - 2)
             if e < φ_n and e > 1 and math.gcd(e, φ_n)==1: 
                 return e
+            
 
+# create_private_exponent() makes the private exponent d that makes up half the public key. 
 # Implements the Extended Euclidean Algorithm to find the private exponent "d"
 def create_private_exponent(e, φ_n):
     r0 = φ_n
@@ -159,6 +165,7 @@ def create_private_exponent(e, φ_n):
             else: 
                 print("Oh no...")
 
+# Compiles all of the functions to create the set of keys 
 def create_keys():
     p, q = generate_two_distinct_primes(bits)
 
@@ -175,6 +182,7 @@ def create_keys():
     
 # TEST MARK: print(create_keys())
 
+
 # STEP 4 
 #   Encrypt the message
 #
@@ -183,6 +191,9 @@ def create_keys():
 
 public_key, private_key = create_keys()
 
+# Takes the public key and uses the two variables to turn a message m into the encrypted message c 
+# using the equation c = ( m ^ e ) % n. It does this by itterating through thaae Unicode transformed 
+# array of the inputted message. 
 def encrypt_message(message):
     encrypted_message_array = []
 
@@ -201,6 +212,9 @@ def encrypt_message(message):
 #   Decrypt the message using the private key
 #
 
+# Takes the private key and uses the two variables to turn an encrypted message c into the message m 
+# using the equation m = ( c ^ d ) % n. It does this by itterating through thaae Unicode transformed 
+# array of the inputted message. Then transforms the unicode back into a readable string from the unicode array
 def decrypt_message(encrypted_message_array):
     encoded_unicode_array = []
 
@@ -215,7 +229,7 @@ def decrypt_message(encrypted_message_array):
 
     return decrypted_string
 
-
+# Simple layout to test the full program flow in terminal 
 def main():
     print("=== RSA Encryption/Decryption ===")
     
@@ -234,3 +248,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
